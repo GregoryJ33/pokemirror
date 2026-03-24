@@ -1,0 +1,15 @@
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+
+*.tflite
+*.onnx
+
+.DS_Store
+*.log
