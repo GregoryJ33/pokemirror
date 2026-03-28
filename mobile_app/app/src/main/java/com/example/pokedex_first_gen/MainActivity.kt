@@ -1,17 +1,18 @@
 package com.example.pokedex_first_gen
 
 import android.Manifest
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.View
+import android.view.animation.DecelerateInterpolator
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -20,16 +21,24 @@ import org.pytorch.Module
 import org.pytorch.Tensor
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var module: Module
+
     private lateinit var labelsMap: Map<String, String>
+    private lateinit var labelsList: List<String>
 
     private lateinit var imageView: ImageView
     private lateinit var resultTextView: TextView
     private lateinit var cameraButton: Button
+
+    private lateinit var pokeImages: List<ImageView>
+    private lateinit var pokeNames: List<TextView>
+    private lateinit var pokeBars: List<ProgressBar>
+
+    private lateinit var topContainers: List<View>
+
     private val CAMERA_REQUEST = 100
     private val CAMERA_PERMISSION_CODE = 200
 
@@ -37,32 +46,84 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        bindViews()
+        setupModel()
+        setupLabels()
+
+        imageView.scaleX = -1f
+
+        setResultsVisible(false)
+
+        cameraButton.setOnClickListener {
+            requestCamera()
+        }
+    }
+
+    // ---------------- UI BIND ----------------
+    private fun bindViews() {
+
         imageView = findViewById(R.id.imageView)
         resultTextView = findViewById(R.id.resultTextView)
         cameraButton = findViewById(R.id.cameraButton)
 
-        // 1️⃣ Charger le modèle TorchScript
+        pokeImages = listOf(
+            findViewById(R.id.imageTop1),
+            findViewById(R.id.imageTop2),
+            findViewById(R.id.imageTop3)
+        )
+
+        pokeNames = listOf(
+            findViewById(R.id.nameTop1),
+            findViewById(R.id.nameTop2),
+            findViewById(R.id.nameTop3)
+        )
+
+        pokeBars = listOf(
+            findViewById(R.id.barTop1),
+            findViewById(R.id.barTop2),
+            findViewById(R.id.barTop3)
+        )
+
+        topContainers = listOf(
+            findViewById(R.id.top1Container),
+            findViewById(R.id.top2Container),
+            findViewById(R.id.top3Container)
+        )
+    }
+
+    // ---------------- MODEL ----------------
+    private fun setupModel() {
         module = Module.load(assetFilePath(this, "model_mobile.pt"))
+    }
 
-        // 2️⃣ Charger labels
-        labelsMap = assets.open("labels.txt").bufferedReader().useLines { lines ->
-            lines.associate { line ->
-                val parts = line.split(",")
-                // parts[0] est l'anglais (la clé), parts[1] est le français (la valeur)
-                parts[0].trim() to parts[1].trim()
-            }
+    // ---------------- LABELS ----------------
+    private fun setupLabels() {
+        val tempMap = mutableMapOf<String, String>()
+        val tempList = mutableListOf<String>()
+
+        assets.open("labels.txt").bufferedReader().forEachLine {
+            val parts = it.split(",")
+            tempMap[parts[0]] = parts[1]
+            tempList.add(parts[0])
         }
 
-        // 3️⃣ Bouton caméra
-        cameraButton.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
-            } else {
-                openCamera()
-            }
+        labelsMap = tempMap
+        labelsList = tempList
+    }
+
+    // ---------------- CAMERA ----------------
+    private fun requestCamera() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA),
+                CAMERA_PERMISSION_CODE
+            )
+        } else {
+            openCamera()
         }
-
-
     }
 
     private fun openCamera() {
@@ -70,44 +131,36 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, CAMERA_REQUEST)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            openCamera()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             val bitmap = data?.extras?.get("data") as Bitmap
+
             imageView.setImageBitmap(bitmap)
-            resultTextView.text = predict(bitmap)
+
+            setResultsVisible(true)
+            predict(bitmap)
         }
     }
 
-    // 🔹 Fonction Top-3
-    private fun predict(bitmap: Bitmap): String {
+    // ---------------- PREDICTION ----------------
+    private fun predict(bitmap: Bitmap) {
+
         val scaled = Bitmap.createScaledBitmap(bitmap, 224, 224, true)
 
-        val mean = floatArrayOf(0.485f, 0.456f, 0.406f)
-        val std = floatArrayOf(0.229f, 0.224f, 0.225f)
-
         val input = FloatArray(3 * 224 * 224)
-        var idxR = 0
-        var idxG = 224 * 224
-        var idxB = 2 * 224 * 224
+        var r = 0
+        var g = 224 * 224
+        var b = 2 * 224 * 224
 
         for (y in 0 until 224) {
             for (x in 0 until 224) {
                 val pixel = scaled.getPixel(x, y)
-                val r = ((pixel shr 16) and 0xFF) / 255.0f
-                val g = ((pixel shr 8) and 0xFF) / 255.0f
-                val b = (pixel and 0xFF) / 255.0f
 
-                input[idxR++] = (r - mean[0]) / std[0]
-                input[idxG++] = (g - mean[1]) / std[1]
-                input[idxB++] = (b - mean[2]) / std[2]
+                input[r++] = ((pixel shr 16 and 0xFF) / 255f - 0.485f) / 0.229f
+                input[g++] = ((pixel shr 8 and 0xFF) / 255f - 0.456f) / 0.224f
+                input[b++] = ((pixel and 0xFF) / 255f - 0.406f) / 0.225f
             }
         }
 
@@ -115,46 +168,101 @@ class MainActivity : AppCompatActivity() {
         val output = module.forward(IValue.from(tensor)).toTensor()
         val scores = output.dataAsFloatArray
 
-        val softmaxScores = softmax(scores)
-        val top3 = softmaxScores
-            .mapIndexed { index, score -> index to score }
+        val probs = softmax(scores)
+
+        val top3 = probs.mapIndexed { i, v -> i to v }
             .sortedByDescending { it.second }
             .take(3)
 
-        val result = StringBuilder("Top 3 Pokémon :\n")
-        for ((index, score) in top3) {
-            // 1. On récupère le nom anglais original (clé de la map)
-            val englishName = labelsMap.keys.elementAt(index)
+        for ((i, pair) in top3.withIndex()) {
 
-            // 2. On récupère la traduction française
-            val frenchName = labelsMap[englishName] ?: englishName
-            val probability = (score * 100).toInt()
-            result.append("$frenchName : $probability%\n")
+            val nameEn = labelsList[pair.first]
+            val nameFr = labelsMap[nameEn] ?: nameEn
+            val prob = (pair.second * 100).toInt()
+
+            val formattedNameFr = nameFr.replaceFirstChar { it.uppercase() }
+            pokeNames[i].text = "$formattedNameFr ($prob%)"
+
+            val resId = getImageResourceName(nameEn)
+            if (resId != 0) pokeImages[i].setImageResource(resId)
+
+            animateBar(pokeBars[i], prob)
+            animateAppear(topContainers[i])
+
+            if (i == 0) {
+                applyGlow(topContainers[i])
+            } else {
+                removeGlow(topContainers[i])
+            }
         }
 
-        return result.toString()
+        resultTextView.text = "Voici ton reflet !"
     }
 
-    private fun softmax(values: FloatArray): FloatArray {
-        val max = values.maxOrNull() ?: 0f
-        val exp = values.map { Math.exp((it - max).toDouble()) }
+    // ---------------- ANIMATIONS ----------------
+    private fun animateAppear(view: View) {
+        view.alpha = 0f
+        view.translationY = 50f
+        view.scaleX = 0.95f
+        view.scaleY = 0.95f
+
+        view.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(450)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
+    }
+
+    private fun animateBar(bar: ProgressBar, value: Int) {
+        val anim = ObjectAnimator.ofInt(bar, "progress", 0, value)
+        anim.duration = 900
+        anim.interpolator = DecelerateInterpolator()
+        anim.start()
+    }
+
+    // ---------------- GLOW ----------------
+    private fun applyGlow(view: View) {
+        view.setBackgroundResource(R.drawable.glow_bg)
+    }
+
+    private fun removeGlow(view: View) {
+        view.setBackgroundResource(R.drawable.pokemon_card)
+    }
+
+    // ---------------- UX ----------------
+    private fun setResultsVisible(visible: Boolean) {
+        val alpha = if (visible) 1f else 0f
+
+        for (v in topContainers) {
+            v.alpha = alpha
+        }
+    }
+
+    // ---------------- IMAGE RES ----------------
+    private fun getImageResourceName(name: String): Int {
+        val formatted = name.lowercase().replace("-", "_")
+        return resources.getIdentifier(formatted, "drawable", packageName)
+    }
+
+    // ---------------- SOFTMAX ----------------
+    private fun softmax(x: FloatArray): FloatArray {
+        val max = x.maxOrNull() ?: 0f
+        val exp = x.map { Math.exp((it - max).toDouble()) }
         val sum = exp.sum()
         return exp.map { (it / sum).toFloat() }.toFloatArray()
     }
 
-    // 🔹 Copier le modèle depuis assets
-    private fun assetFilePath(context: Context, assetName: String): String {
-        val file = File(context.filesDir, assetName)
-        if (file.exists() && file.length() > 0) return file.absolutePath
+    // ---------------- ASSET LOADER ----------------
+    private fun assetFilePath(context: Context, name: String): String {
+        val file = File(context.filesDir, name)
+        if (file.exists()) return file.absolutePath
 
-        context.assets.open(assetName).use { inputStream ->
-            FileOutputStream(file).use { outputStream ->
-                val buffer = ByteArray(4 * 1024)
-                var read: Int
-                while (inputStream.read(buffer).also { read = it } != -1) {
-                    outputStream.write(buffer, 0, read)
-                }
-                outputStream.flush()
+        context.assets.open(name).use { input ->
+            FileOutputStream(file).use { output ->
+                input.copyTo(output)
             }
         }
         return file.absolutePath

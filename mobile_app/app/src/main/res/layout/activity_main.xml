@@ -1,28 +1,199 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:background="@drawable/bg_gradient"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/cameraButton"
+    <!-- HEADER GLASS -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Prendre une photo" />
+        android:padding="18dp"
+        android:background="#22FFFFFF">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="16dp" />
+        <TextView
+            android:text="PokeMirror AI"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/resultTextView"
+    <LinearLayout
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Résultat"
-        android:textSize="20sp"
-        android:layout_marginTop="16dp"/>
+        android:layout_height="match_parent">
+
+        <!-- MIRROR CARD -->
+        <LinearLayout
+            android:background="@drawable/pokemon_card"
+            android:padding="20dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:background="@drawable/mirror_circle"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:text="Analyse ton reflet avec PokeMirror"
+                android:textColor="#CCFFFFFF"
+                android:gravity="center"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/cameraButton"
+                android:text="Scanner mon reflet"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_gradient"
+                android:textColor="#FFFFFF"
+                android:padding="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <!-- RESULT STATE -->
+        <TextView
+            android:id="@+id/resultTextView"
+            android:layout_marginTop="18dp"
+            android:text="EN ATTENTE DE SCAN..."
+            android:textColor="#88FFFFFF"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!-- CARDS -->
+        <LinearLayout
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- TOP 1 -->
+            <LinearLayout
+                android:id="@+id/top1Container"
+                android:background="@drawable/glow_bg"
+                android:padding="14dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imageTop1"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"/>
+
+                <LinearLayout
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/nameTop1"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ProgressBar
+                        android:id="@+id/barTop1"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:max="100"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- TOP 2 -->
+            <LinearLayout
+                android:id="@+id/top2Container"
+                android:background="@drawable/glow_bg"
+                android:padding="14dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imageTop2"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"/>
+
+                <LinearLayout
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/nameTop2"
+                        android:textColor="#FFFFFF"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ProgressBar
+                        android:id="@+id/barTop2"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:max="100"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- TOP 3 -->
+            <LinearLayout
+                android:id="@+id/top3Container"
+                android:background="@drawable/glow_bg"
+                android:padding="14dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imageTop3"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"/>
+
+                <LinearLayout
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/nameTop3"
+                        android:textColor="#FFFFFF"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ProgressBar
+                        android:id="@+id/barTop3"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:max="100"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </LinearLayout>
