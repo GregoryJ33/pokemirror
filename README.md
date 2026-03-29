@@ -47,7 +47,6 @@ The model is based on EfficientNet-B0 pretrained on ImageNet and fine-tuned on a
 
 The trained model is exported to TorchScript for mobile inference.
 
-
 ## Project Structure
 
 ```text
