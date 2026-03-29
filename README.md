@@ -1,7 +1,7 @@
 # PokeMirror : Face to Pokemon Matching (Gen 1)
 
 <p align="center">
-  <img src="media/demo.gif" alt="Demo PokeMirror" width="400">
+  <img src="media/demo.gif" alt="Demo PokeMirror" width="250">
 </p>
 
 Important: This repository does not include the trained model weights. You must train the model yourself using the provided notebook or supply your own TorchScript model.
