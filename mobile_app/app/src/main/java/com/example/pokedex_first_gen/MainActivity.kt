@@ -178,15 +178,18 @@ class MainActivity : AppCompatActivity() {
 
             val nameEn = labelsList[pair.first]
             val nameFr = labelsMap[nameEn] ?: nameEn
-            val prob = (pair.second * 100).toInt()
+
+            val percent = pair.second * 100
+            val probInt = percent.toInt()
+            val probDouble = "%.2f".format(percent)
 
             val formattedNameFr = nameFr.replaceFirstChar { it.uppercase() }
-            pokeNames[i].text = "$formattedNameFr ($prob%)"
+            pokeNames[i].text = "$formattedNameFr ($probDouble%)"
 
             val resId = getImageResourceName(nameEn)
             if (resId != 0) pokeImages[i].setImageResource(resId)
 
-            animateBar(pokeBars[i], prob)
+            animateBar(pokeBars[i], probInt)
             animateAppear(topContainers[i])
 
             if (i == 0) {
