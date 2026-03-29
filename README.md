@@ -132,6 +132,14 @@ scikit-learn
 matplotlib
 Pillow
 
+## Disclaimer
+
+This project is an unofficial, non-commercial, educational project.
+
+Pokémon and Pokémon character names are trademarks of Nintendo, Game Freak, and The Pokémon Company.
+
+This project is not affiliated with, endorsed, or sponsored by any of these companies.
+
 ## Author
 
 Name: Grégory Jourdain  
