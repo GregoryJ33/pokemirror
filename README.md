@@ -50,23 +50,23 @@ The trained model is exported to TorchScript for mobile inference.
 
 ## Project Structure
 
+```text
 project-root/
-│
 ├── notebook/
 │   └── training.ipynb        # Training, evaluation, export
 │
 ├── data/
-│   └── images/              # Pokemon dataset (Gen 1)
+│   └── images/               # Pokémon dataset (Gen 1)
 │
 ├── mobile_code/
-│   └── app/                 # Android app (Kotlin + XML)
-|                
+│   └── app/                  # Android app (Kotlin + XML)
+│
 ├── media/
-│   └── demo.gif             # Demo of the app 
-|             
+│   └── demo.gif              # Demo of the app
+│
 ├── requirements.txt
 └── README.md
-
+```
 
 ## Installation and Usage
 
