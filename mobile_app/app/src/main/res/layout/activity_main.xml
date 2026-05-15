@@ -21,12 +21,13 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
+    <!-- AJUSTEMENT : On passe en wrap_content pour laisser le contenu respirer -->
     <LinearLayout
         android:padding="20dp"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <!-- MIRROR CARD -->
         <LinearLayout
@@ -73,127 +74,132 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <!-- CARDS -->
-        <LinearLayout
-            android:layout_marginTop="24dp"
-            android:orientation="vertical"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:scrollbars="none">
 
-            <!-- TOP 1 -->
+            <!-- CARDS  -->
             <LinearLayout
-                android:id="@+id/top1Container"
-                android:background="@drawable/glow_bg"
-                android:padding="14dp"
-                android:layout_marginBottom="12dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/imageTop1"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"/>
-
+                <!-- TOP 1 -->
                 <LinearLayout
-                    android:layout_marginStart="12dp"
-                    android:orientation="vertical"
+                    android:id="@+id/top1Container"
+                    android:background="@drawable/glow_bg"
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/nameTop1"
-                        android:textColor="#FFFFFF"
-                        android:textStyle="bold"
-                        android:textSize="18sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:id="@+id/imageTop1"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"/>
 
-                    <ProgressBar
-                        android:id="@+id/barTop1"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:max="100"
+                    <LinearLayout
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="6dp"/>
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/nameTop1"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <ProgressBar
+                            android:id="@+id/barTop1"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:max="100"
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"/>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-            <!-- TOP 2 -->
-            <LinearLayout
-                android:id="@+id/top2Container"
-                android:background="@drawable/glow_bg"
-                android:padding="14dp"
-                android:layout_marginBottom="12dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/imageTop2"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"/>
-
+                <!-- TOP 2 -->
                 <LinearLayout
-                    android:layout_marginStart="12dp"
-                    android:orientation="vertical"
+                    android:id="@+id/top2Container"
+                    android:background="@drawable/glow_bg"
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/nameTop2"
-                        android:textColor="#FFFFFF"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:id="@+id/imageTop2"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"/>
 
-                    <ProgressBar
-                        android:id="@+id/barTop2"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:max="100"
+                    <LinearLayout
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="6dp"/>
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/nameTop2"
+                            android:textColor="#FFFFFF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <ProgressBar
+                            android:id="@+id/barTop2"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:max="100"
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"/>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-            <!-- TOP 3 -->
-            <LinearLayout
-                android:id="@+id/top3Container"
-                android:background="@drawable/glow_bg"
-                android:padding="14dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/imageTop3"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"/>
-
+                <!-- TOP 3 -->
                 <LinearLayout
-                    android:layout_marginStart="12dp"
-                    android:orientation="vertical"
+                    android:id="@+id/top3Container"
+                    android:background="@drawable/glow_bg"
+                    android:padding="14dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/nameTop3"
-                        android:textColor="#FFFFFF"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:id="@+id/imageTop3"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"/>
 
-                    <ProgressBar
-                        android:id="@+id/barTop3"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:max="100"
+                    <LinearLayout
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="6dp"/>
-                </LinearLayout>
-            </LinearLayout>
+                        android:layout_height="wrap_content">
 
-        </LinearLayout>
+                        <TextView
+                            android:id="@+id/nameTop3"
+                            android:textColor="#FFFFFF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <ProgressBar
+                            android:id="@+id/barTop3"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:max="100"
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
-
 </LinearLayout>
